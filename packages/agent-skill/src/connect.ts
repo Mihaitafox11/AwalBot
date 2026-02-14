@@ -43,7 +43,12 @@ export async function connect(opts: ConnectOptions) {
 
   // 2. Connect to relay
   return new Promise<void>((resolve) => {
-    const socket: Socket = io(relayUrl, { transports: ["websocket"] });
+    const socket: Socket = io(relayUrl, {
+      transports: ["websocket", "polling"],
+      reconnection: true,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+    });
 
     socket.on("connect", () => {
       console.log("  ✓ Connected to AwalBot relay");
@@ -53,6 +58,10 @@ export async function connect(opts: ConnectOptions) {
     socket.on("auth:ok", ({ name }: { name: string }) => {
       console.log(`  ✓ Authenticated as "${name}"`);
       console.log(`\n  Agent is LIVE on the marketplace!\n`);
+
+      // Keep-alive ping every 25s
+      setInterval(() => socket.emit("ping"), 25_000);
+
       resolve();
     });
 
@@ -103,8 +112,14 @@ export async function connect(opts: ConnectOptions) {
     socket.on("disconnect", (reason) => {
       console.log(`  Disconnected: ${reason}`);
       if (reason !== "io client disconnect") {
-        console.log("  Reconnecting...");
+        console.log("  Will reconnect automatically...");
       }
+    });
+
+    // Re-auth after reconnect
+    socket.io.on("reconnect", () => {
+      console.log("  Reconnected, re-authenticating...");
+      socket.emit("auth", { token: opts.token });
     });
   });
 }
