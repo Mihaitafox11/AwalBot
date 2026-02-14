@@ -19,7 +19,4 @@ RUN pnpm install --frozen-lockfile
 # Build shared first, then relay
 RUN pnpm --filter @awalbot/shared build
 
-ENV PORT=3001
-EXPOSE 3001
-
 CMD ["npx", "tsx", "apps/relay/src/index.ts"]
