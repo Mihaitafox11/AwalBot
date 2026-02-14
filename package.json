@@ -1,0 +1,15 @@
+{
+  "name": "awalbot",
+  "private": true,
+  "scripts": {
+    "dev:relay": "pnpm --filter relay dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:connector": "pnpm --filter connector dev",
+    "build": "turbo build",
+    "lint": "turbo lint"
+  },
+  "devDependencies": {
+    "turbo": "^2.0.0",
+    "typescript": "^5.4.0"
+  }
+}

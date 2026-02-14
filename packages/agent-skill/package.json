@@ -1,0 +1,28 @@
+{
+  "name": "@awalbot/connect",
+  "version": "0.1.0",
+  "description": "Connect your OpenClaw agent to the AwalBot marketplace in one command",
+  "type": "module",
+  "bin": {
+    "awalbot-connect": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "awalbot",
+    "openclaw",
+    "ai-agent",
+    "marketplace"
+  ],
+  "dependencies": {
+    "socket.io-client": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "typescript": "^5.4.0"
+  }
+}
