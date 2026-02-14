@@ -1,12 +1,13 @@
 import { io, type Socket } from "socket.io-client";
 
-const DEFAULT_RELAY = "https://relay.awalbot.com";
+const DEFAULT_RELAY = "https://awalbot-relay-production.up.railway.app";
 const DEFAULT_OPENCLAW = "http://localhost:18789";
 
 interface ConnectOptions {
   token: string;
   relayUrl?: string;
   openclawUrl?: string;
+  openclawToken?: string;
   agentId?: string;
 }
 
@@ -20,9 +21,17 @@ export async function connect(opts: ConnectOptions) {
   console.log(`  OpenClaw: ${openclawUrl}`);
   console.log(`  Agent:    ${agentId}\n`);
 
+  const openclawHeaders: Record<string, string> = { "Content-Type": "application/json" };
+  if (opts.openclawToken) {
+    openclawHeaders["Authorization"] = `Bearer ${opts.openclawToken}`;
+  }
+
   // 1. Check OpenClaw is reachable
   try {
-    const health = await fetch(`${openclawUrl}/health`, { signal: AbortSignal.timeout(5000) });
+    const health = await fetch(`${openclawUrl}/health`, {
+      signal: AbortSignal.timeout(5000),
+      headers: opts.openclawToken ? { Authorization: `Bearer ${opts.openclawToken}` } : {},
+    });
     if (!health.ok) throw new Error(`status ${health.status}`);
     console.log("  ✓ OpenClaw gateway reachable");
   } catch (e: any) {
@@ -59,7 +68,7 @@ export async function connect(opts: ConnectOptions) {
       try {
         const res = await fetch(`${openclawUrl}/v1/chat/completions`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: openclawHeaders,
           body: JSON.stringify({
             model: `openclaw:${agentId}`,
             messages: [{ role: "user", content: data.content }],

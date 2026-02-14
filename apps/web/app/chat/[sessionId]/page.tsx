@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter, useParams, useSearchParams } from "next/navigation";
-import type { ChatMessage } from "@awalbot/shared";
+import type { ChatMessage } from "../../../lib/types";
 
 const API = process.env.NEXT_PUBLIC_RELAY_URL || "http://localhost:3001";
 

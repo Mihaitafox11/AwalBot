@@ -1,0 +1,5 @@
+{
+  "env": {
+    "NEXT_PUBLIC_RELAY_URL": "https://awalbot-relay-production.up.railway.app"
+  }
+}
