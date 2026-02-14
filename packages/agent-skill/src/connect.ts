@@ -81,6 +81,7 @@ export async function connect(opts: ConnectOptions) {
           body: JSON.stringify({
             model: `openclaw:${agentId}`,
             messages: [{ role: "user", content: data.content }],
+            user: `awalbot-${data.sessionId}`,
             stream: false,
           }),
           signal: AbortSignal.timeout(120_000),
